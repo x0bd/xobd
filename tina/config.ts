@@ -1,17 +1,17 @@
-import { defineConfig } from "tinacms";
+import { defineConfig } from "tinacms"
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =
   process.env.GITHUB_BRANCH ||
   process.env.VERCEL_GIT_COMMIT_REF ||
   process.env.HEAD ||
-  "main";
+  "main"
 
 export default defineConfig({
   branch,
 
   // Get this from tina.io
-  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID,
+  clientId: process.env.TINA_CLIENT_ID,
   // Get this from tina.io
   token: process.env.TINA_TOKEN,
 
@@ -29,29 +29,35 @@ export default defineConfig({
   schema: {
     collections: [
       {
-        name: "post",
-        label: "Posts",
-        path: "content/posts",
+        name: "page",
+        label: "Pages",
+        path: "content/page",
+        format: "mdx",
         fields: [
           {
-            type: "string",
             name: "title",
+            type: "string",
             label: "Title",
             isTitle: true,
             required: true,
           },
           {
-            type: "rich-text",
             name: "body",
+            type: "rich-text",
             label: "Body",
             isBody: true,
           },
         ],
         ui: {
           // This is an DEMO router. You can remove this to fit your site
-          router: ({ document }) => `/demo/blog/${document._sys.filename}`,
+          router: ({ document }) => {
+            if (document._sys.filename === "home") {
+              return `/`
+            }
+            return undefined
+          },
         },
       },
     ],
   },
-});
+})
